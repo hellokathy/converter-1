@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="length_units">
+        <item>angstrom</item>
+        <item>astronomical unit</item>
+        <item>centimeter</item>
+        <item>chain</item>
+        <item>decimeter</item>
+        <item>fathom</item>
+        <item>foot</item>
+        <item>furlong</item>
+        <item>inch</item>
+        <item>kilometer</item>
+        <item>league</item>
+        <item>light year</item>
+        <item>meter</item>
+        <item>micrometer</item>
+        <item>micron</item>
+        <item>mile</item>
+        <item>millimeter</item>
+        <item>nanometer</item>
+        <item>nautical mile</item>
+        <item>parsec</item>
+        <item>rod</item>
+        <item>yard</item>
+    </string-array>
+
+</resources>
