@@ -1,6 +1,7 @@
 package com.bliksem.scientificunitconverter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -13,8 +14,8 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 public class LengthFragment extends Fragment {
-	
-	String unitGroup;
+
+	HashMap<String, String> unitSymbols = new HashMap();
 
 	public LengthFragment() {
 	}
@@ -24,12 +25,7 @@ public class LengthFragment extends Fragment {
 
 		View rootView = inflater.inflate(R.layout.length_fragment, container, false);
 		
-		Bundle bundle = this.getArguments();
-		
-	    unitGroup = bundle.getString("unit_group", "defaultValue");
-		
-		Toast.makeText(getActivity(), unitGroup, Toast.LENGTH_SHORT).show();
-		
+
 		return rootView;
 	}
 
@@ -44,11 +40,9 @@ public class LengthFragment extends Fragment {
 		for (int i = 0; i < length_array.length; ++i) {
 			mLengthUnits.add(length_array[i]);
 		}
-		
+
 		Spinner spinner = (Spinner) getView().findViewById(R.id.myspinner);
 
-		// Create an ArrayAdapter using the string array and a default spinner
-		// layout
 		ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(getActivity(),
 				R.array.length_units, android.R.layout.simple_spinner_item);
 
@@ -66,4 +60,5 @@ public class LengthFragment extends Fragment {
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 	}
+
 }

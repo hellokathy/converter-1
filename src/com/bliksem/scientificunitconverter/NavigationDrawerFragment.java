@@ -73,7 +73,7 @@ public class NavigationDrawerFragment extends Fragment {
 		for (int i = 0; i <= navMenuTitles.length - 1; i++) {
 			navigationDrawerRows.add(new NavigationDrawerRow(navMenuTitles[i], navMenuImgs[i]));
 		}
-		
+
 		selectItem(mCurrentSelectedPosition);
 	}
 
@@ -199,19 +199,19 @@ public class NavigationDrawerFragment extends Fragment {
 			mCallbacks.onNavigationDrawerItemSelected(position);
 		}
 
-		/**
-		 * switch (position) { case 0:
-		 * 
-		 * break; case 1: bundle.putString( "group", "Angle");
-		 * fragment.setArguments(bundle); break; default: break; }
-		 **/
+		Fragment fragment = null;
 		
-		Fragment fragment = new LengthFragment();
-
-		Bundle bundle = new Bundle();
-
-		bundle.putString("unit_group", navMenuTitles[position]);
-		fragment.setArguments(bundle);
+		switch (position) {
+		case 0:
+			fragment = new AccelerationFragment();
+			break;
+		case 1:
+			fragment = new LengthFragment();
+			break;
+		default:
+			fragment = new LengthFragment();
+			break;
+		}
 
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
