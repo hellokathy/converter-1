@@ -35,6 +35,9 @@ public class AccelerationFragment extends Fragment {
 	HashMap<String, String> unitSymbols = new HashMap();
 	HashMap<String, Unit<Acceleration>> unitObjects = new HashMap();
 	HashMap<String, String> unitNiceNames = new HashMap();
+	
+	private ArrayList<UnitListViewRow> unitListViewRows;
+	private UnitListViewAdapter unitListViewAdapter;
 
 	public AccelerationFragment() {
 	}
@@ -42,7 +45,7 @@ public class AccelerationFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		View rootView = inflater.inflate(R.layout.length_fragment, container, false);
+		View rootView = inflater.inflate(R.layout.units_fragment, container, false);
 
 		return rootView;
 	}
@@ -52,6 +55,13 @@ public class AccelerationFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 
 		this.setup();
+		
+		unitListViewRows = new ArrayList<UnitListViewRow>();
+		
+		for ( String key : unitNiceNames.keySet() ) 
+		{
+			unitListViewRows.add( new UnitListViewRow(unitNiceNames.get(key), unitSymbols.get(key)));
+		}
 
 		ArrayList<String> mLengthUnits = new ArrayList<String>();
 
@@ -61,7 +71,7 @@ public class AccelerationFragment extends Fragment {
 			mLengthUnits.add(length_array[i]);
 		}
 
-		Spinner spinner = (Spinner) getView().findViewById(R.id.myspinner);
+		Spinner spinner = (Spinner) getView().findViewById(R.id.spinner);
 
 		ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(getActivity(),
 				R.array.length_units, android.R.layout.simple_spinner_item);
@@ -69,13 +79,13 @@ public class AccelerationFragment extends Fragment {
 		spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 		spinner.setAdapter(spinner_adapter);
-
-		StableArrayAdapter adapter = new StableArrayAdapter(getActivity().getApplicationContext(),
-				R.layout.listview_row, mLengthUnits);
-		DynamicListView listView = (DynamicListView) getView().findViewById(R.id.listview);
+		
+		unitListViewAdapter = new UnitListViewAdapter(getActivity().getApplicationContext(), unitListViewRows );
+		
+		DynamicListView listView = (DynamicListView) getView().findViewById(R.id.dynamic_listview);
 
 		listView.setCheeseList(mLengthUnits);
-		listView.setAdapter(adapter);
+		listView.setAdapter(unitListViewAdapter);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 	}

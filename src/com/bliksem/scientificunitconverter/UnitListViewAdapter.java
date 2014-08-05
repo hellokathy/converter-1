@@ -2,8 +2,6 @@ package com.bliksem.scientificunitconverter;
 
 import java.util.ArrayList;
 
-import com.joanzapata.android.iconify.Iconify;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -14,12 +12,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class NavigationDrawerAdapter extends BaseAdapter {
+public class UnitListViewAdapter extends BaseAdapter {
 
 	private Context context;
-	private ArrayList<NavigationDrawerRow> navDrawerRows;
+	private ArrayList<UnitListViewRow> navDrawerRows;
 
-	public NavigationDrawerAdapter(Context context, ArrayList<NavigationDrawerRow> navDrawerItems) {
+	public UnitListViewAdapter(Context context, ArrayList<UnitListViewRow> navDrawerItems) {
 		this.context = context;
 		this.navDrawerRows = navDrawerItems;
 	}
@@ -46,15 +44,13 @@ public class NavigationDrawerAdapter extends BaseAdapter {
 			convertView = mInflater.inflate(R.layout.navigation_drawer_row, null);
 		}
 
-		TextView txtImg = (TextView) convertView.findViewById(R.id.navdrawerrow_image);
-		TextView txtTitle = (TextView) convertView.findViewById(R.id.navdrawerrow_title);
-		TextView txtExample = (TextView) convertView.findViewById(R.id.navdrawerrow_example);
+		TextView txtNiceName = (TextView) convertView.findViewById(R.id.unit_listview_row_nicename);
+		TextView txtSymbol = (TextView) convertView.findViewById(R.id.unit_listview_row_symbol);
+		TextView txtResult = (TextView) convertView.findViewById(R.id.unit_listview_row_result);
 
-		txtImg.setText(navDrawerRows.get(position).getImg());
-		txtTitle.setText(navDrawerRows.get(position).getTitle());
-		txtExample.setText("example, example, example");
-        
-		Iconify.addIcons(txtImg);
+		txtNiceName.setText(navDrawerRows.get(position).getNiceName());
+		txtSymbol.setText(navDrawerRows.get(position).getSymbol());
+		txtResult.setText("99.65401");
 
 		return convertView;
 	}

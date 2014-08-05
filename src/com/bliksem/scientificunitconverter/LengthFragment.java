@@ -41,7 +41,7 @@ public class LengthFragment extends Fragment {
 			mLengthUnits.add(length_array[i]);
 		}
 
-		Spinner spinner = (Spinner) getView().findViewById(R.id.myspinner);
+		Spinner spinner = (Spinner) getView().findViewById(R.id.spinner);
 
 		ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(getActivity(),
 				R.array.length_units, android.R.layout.simple_spinner_item);
@@ -53,7 +53,7 @@ public class LengthFragment extends Fragment {
 
 		StableArrayAdapter adapter = new StableArrayAdapter(getActivity().getApplicationContext(),
 				R.layout.listview_row, mLengthUnits);
-		DynamicListView listView = (DynamicListView) getView().findViewById(R.id.listview);
+		DynamicListView listView = (DynamicListView) getView().findViewById(R.id.dynamic_listview);
 
 		listView.setCheeseList(mLengthUnits);
 		listView.setAdapter(adapter);
