@@ -205,11 +205,8 @@ public class NavigationDrawerFragment extends Fragment {
 		case 0:
 			fragment = new AccelerationFragment();
 			break;
-		case 1:
-			fragment = new LengthFragment();
-			break;
 		default:
-			fragment = new LengthFragment();
+			fragment = new AccelerationFragment();
 			break;
 		}
 

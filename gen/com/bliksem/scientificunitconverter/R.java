@@ -332,6 +332,8 @@ containing a value of this type.
         public static final int zOrderOnTop=0x7f010010;
     }
     public static final class color {
+        public static final int ab_item=0x7f060017;
+        public static final int blue=0x7f06001a;
         public static final int common_action_bar_splitter=0x7f060009;
         /**  Sign-in Button Colors 
          */
@@ -344,8 +346,10 @@ containing a value of this type.
         public static final int common_signin_btn_light_text_disabled=0x7f060006;
         public static final int common_signin_btn_light_text_focused=0x7f060007;
         public static final int common_signin_btn_light_text_pressed=0x7f060005;
-        public static final int common_signin_btn_text_dark=0x7f060017;
-        public static final int common_signin_btn_text_light=0x7f060018;
+        public static final int common_signin_btn_text_dark=0x7f06001b;
+        public static final int common_signin_btn_text_light=0x7f06001c;
+        public static final int grey_light=0x7f060018;
+        public static final int text=0x7f060019;
         public static final int wallet_bright_foreground_disabled_holo_light=0x7f06000f;
         /** 
          Wallet colors to support consistent Wallet fragment holo dark UI in client application
@@ -364,8 +368,8 @@ containing a value of this type.
         public static final int wallet_hint_foreground_holo_light=0x7f060011;
         public static final int wallet_holo_blue_light=0x7f060015;
         public static final int wallet_link_text_light=0x7f060016;
-        public static final int wallet_primary_text_holo_light=0x7f060019;
-        public static final int wallet_secondary_text_holo_dark=0x7f06001a;
+        public static final int wallet_primary_text_holo_light=0x7f06001d;
+        public static final int wallet_secondary_text_holo_dark=0x7f06001e;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -420,7 +424,7 @@ containing a value of this type.
         public static final int powered_by_google_light=0x7f020020;
     }
     public static final class id {
-        public static final int action_settings=0x7f070022;
+        public static final int action_settings=0x7f070023;
         public static final int amount=0x7f070016;
         public static final int book_now=0x7f070010;
         public static final int buyButton=0x7f07000a;
@@ -429,17 +433,18 @@ containing a value of this type.
         public static final int classic=0x7f070011;
         public static final int container=0x7f070019;
         public static final int drawer_layout=0x7f070018;
-        public static final int dynamic_listview=0x7f070017;
+        public static final int dynamic_listview=0x7f07001b;
         public static final int grayscale=0x7f070012;
         public static final int holo_dark=0x7f070005;
         public static final int holo_light=0x7f070006;
         public static final int hybrid=0x7f070004;
         public static final int linearlayout=0x7f070014;
+        public static final int listview=0x7f070017;
         public static final int match_parent=0x7f07000c;
         public static final int monochrome=0x7f070013;
-        public static final int navdrawerrow_example=0x7f07001d;
-        public static final int navdrawerrow_image=0x7f07001b;
-        public static final int navdrawerrow_title=0x7f07001c;
+        public static final int navdrawerrow_example=0x7f07001e;
+        public static final int navdrawerrow_image=0x7f07001c;
+        public static final int navdrawerrow_title=0x7f07001d;
         public static final int navigation_drawer=0x7f07001a;
         public static final int none=0x7f070000;
         public static final int normal=0x7f070001;
@@ -450,10 +455,10 @@ containing a value of this type.
         public static final int spinner=0x7f070015;
         public static final int strict_sandbox=0x7f070009;
         public static final int terrain=0x7f070003;
-        public static final int textView12=0x7f070021;
-        public static final int unit_listview_row_nicename=0x7f07001e;
-        public static final int unit_listview_row_result=0x7f070020;
-        public static final int unit_listview_row_symbol=0x7f07001f;
+        public static final int textView12=0x7f070022;
+        public static final int unit_listview_row_nicename=0x7f07001f;
+        public static final int unit_listview_row_result=0x7f070021;
+        public static final int unit_listview_row_symbol=0x7f070020;
         public static final int wrap_content=0x7f07000d;
     }
     public static final class integer {
