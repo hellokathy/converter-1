@@ -3,34 +3,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:weightSum="3" >
+    android:weightSum="3"
+    android:gravity="left|center" >
 
     <TextView
         android:id="@+id/unit_listview_row_nicename"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="nice name"
+        android:textStyle="bold"
         android:textAppearance="?android:attr/textAppearanceSmall" 
-        android:gravity="left"/>
+        android:gravity="left"
+        android:padding="3sp"/>
 
     <TextView
         android:id="@+id/unit_listview_row_symbol"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="symbol"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textStyle="italic"
         android:layout_weight="1" 
-        android:gravity="center" />
+        android:gravity="center"
+        android:padding="3sp" />
 
     <TextView
         android:id="@+id/unit_listview_row_result"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="right"
-        android:text="0.0000000001"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:padding="3sp" />
 
 </LinearLayout>

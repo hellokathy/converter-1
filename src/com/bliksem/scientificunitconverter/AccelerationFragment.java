@@ -1,26 +1,36 @@
 package com.bliksem.scientificunitconverter;
 
+import static javax.measure.unit.SI.CENTI;
+import static javax.measure.unit.SI.METERS_PER_SQUARE_SECOND;
+import static javax.measure.unit.SI.MICRO;
+import static javax.measure.unit.SI.MILLI;
+
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.TreeMap;
 
 import javax.measure.quantity.Acceleration;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
-import static javax.measure.unit.NonSI.*;
-import static javax.measure.unit.SI.*;
-
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-public class AccelerationFragment extends Fragment {
+public class AccelerationFragment extends Fragment
+{
 
 	Unit<Acceleration> CENTIMETERS_PER_SQUARE_SECOND = CENTI(SI.METERS_PER_SQUARE_SECOND);
 	Unit<Acceleration> FOOT_PER_SQUARE_SECOND = SI.METERS_PER_SQUARE_SECOND.times(0.30480);
@@ -33,50 +43,88 @@ public class AccelerationFragment extends Fragment {
 	Unit<Acceleration> INCHES_PER_SQUARE_SECOND = SI.METERS_PER_SQUARE_SECOND.times(0.0254);
 	Unit<Acceleration> YARDS_PER_SQUARE_SECOND = SI.METERS_PER_SQUARE_SECOND.times(0.9144);
 
-	HashMap<String, String> unitSymbols = new HashMap();
-	HashMap<String, Unit<Acceleration>> unitObjects = new HashMap();
-	HashMap<String, String> unitNiceNames = new HashMap();
+	TreeMap<String, String> unitSymbols = new TreeMap<String, String>();
+	TreeMap<String, Unit<Acceleration>> unitObjects = new TreeMap<String, Unit<Acceleration>>();
+	TreeMap<String, String> unitNiceNames = new TreeMap<String, String>();
 
 	private ArrayList<UnitListViewRow> unitListViewRows;
 	private UnitListViewAdapter unitListViewAdapter;
 
-	public AccelerationFragment() {
+	Spinner spinner;
+	EditText amount;
+	ListView listView;
+
+	public AccelerationFragment()
+	{
+
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+	{
+		this.setup();
 
 		View rootView = inflater.inflate(R.layout.acceleration_fragment, container, false);
+
+		amount = (EditText) rootView.findViewById(R.id.amount);
+		spinner = (Spinner) rootView.findViewById(R.id.spinner);
+
+		amount.addTextChangedListener(new TextWatcher()
+		{
+			public void afterTextChanged(Editable s)
+			{
+				Log.d("VIC", "afterTextChanged: " + s.toString());
+				unitListViewAdapter.notifyDataSetChanged();
+				Toast.makeText(getActivity(), "Updating adapter", Toast.LENGTH_SHORT).show();
+			}
+
+			public void beforeTextChanged(CharSequence s, int start, int count, int after)
+			{
+			}
+
+			public void onTextChanged(CharSequence s, int start, int before, int count)
+			{
+			}
+		});
+
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+			{
+				unitListViewAdapter.notifyDataSetChanged();
+				Toast.makeText(getActivity(), "Updating adapter", Toast.LENGTH_SHORT).show();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0)
+			{
+			}
+
+		});
 
 		return rootView;
 	}
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
 		super.onActivityCreated(savedInstanceState);
-
-		this.setup();
 
 		unitListViewRows = new ArrayList<UnitListViewRow>();
 
-		for (String key : unitNiceNames.keySet()) {
+		ArrayList<String> niceNamesList = new ArrayList<String>();
+
+		for (String key : unitNiceNames.keySet())
+		{
 			unitListViewRows.add(new UnitListViewRow(unitNiceNames.get(key), unitSymbols.get(key)));
-			Log.e("MYTAG2", unitNiceNames.get(key) + " " + unitSymbols.get(key));
-
+			niceNamesList.add(unitNiceNames.get(key));
 		}
 
-		ArrayList<String> mLengthUnits = new ArrayList<String>();
+		spinner = (Spinner) getView().findViewById(R.id.spinner);
 
-		String[] length_array = getResources().getStringArray(R.array.length_units);
-
-		for (int i = 0; i < length_array.length; ++i) {
-			mLengthUnits.add(length_array[i]);
-		}
-
-		Spinner spinner = (Spinner) getView().findViewById(R.id.spinner);
-
-		ArrayAdapter<CharSequence> spinner_adapter = ArrayAdapter.createFromResource(getActivity(),
-				R.array.length_units, android.R.layout.simple_spinner_item);
+		ArrayAdapter<String> spinner_adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, niceNamesList);
 
 		spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -84,14 +132,15 @@ public class AccelerationFragment extends Fragment {
 
 		unitListViewAdapter = new UnitListViewAdapter(getActivity().getApplicationContext(), unitListViewRows);
 
-		ListView listView = (ListView) getView().findViewById(R.id.listview);
+		listView = (ListView) getView().findViewById(R.id.listview);
 
 		listView.setAdapter(unitListViewAdapter);
 		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 	}
 
-	private void setup() {
+	private void setup()
+	{
 
 		// unit symbols
 		unitSymbols.put("METERS_PER_SQUARE_SECOND", "m/s\u00B2");
@@ -117,7 +166,7 @@ public class AccelerationFragment extends Fragment {
 		unitNiceNames.put("G_UNIT", "g-force");
 		unitNiceNames.put("MILES_PER_SQUARE_SECOND", "mile/sec\u00B2");
 		unitNiceNames.put("INCHES_PER_SQUARE_SECOND", "inch/sec\u00B2");
-		unitNiceNames.put("YARDS_PER_SQUARE_SECOND", "yd/s\u00B2");
+		unitNiceNames.put("YARDS_PER_SQUARE_SECOND", "yard/s\u00B2");
 
 		// unit objects
 		unitObjects.put("METERS_PER_SQUARE_SECOND", METERS_PER_SQUARE_SECOND);
@@ -133,4 +182,5 @@ public class AccelerationFragment extends Fragment {
 		unitObjects.put("YARDS_PER_SQUARE_SECOND", YARDS_PER_SQUARE_SECOND);
 
 	}
+
 }
