@@ -1,12 +1,13 @@
 package com.bliksem.scientificunitconverter;
 
+import java.util.HashMap;
+
 public class NavigationDrawerRow
 {
-
 	private String img;
 	private String title;
 	private String example;
-
+	
 	public NavigationDrawerRow()
 	{
 	}

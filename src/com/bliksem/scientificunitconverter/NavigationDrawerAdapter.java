@@ -21,7 +21,7 @@ public class NavigationDrawerAdapter extends BaseAdapter
 	public NavigationDrawerAdapter(Context context, ArrayList<NavigationDrawerRow> navDrawerItems)
 	{
 		this.context = context;
-		this.navDrawerRows = navDrawerItems;
+		this.navDrawerRows = navDrawerItems;	
 	}
 
 	@Override

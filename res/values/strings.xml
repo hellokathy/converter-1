@@ -8,6 +8,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
     <string name="default_text">1</string>
-    
-   
+    <string name="pref_number_format_title">Number Format</string>
+    <string name="pref_appearance_category">Appearance</string>
+    <string name="test2">test2</string>
+    <string name="test3">test3</string>
+
 </resources>

@@ -11,11 +11,19 @@ public class UnitListViewRow
 	{
 	}
 
-	public UnitListViewRow(String nicename, String symbol)
+	public UnitListViewRow(String nicename, String symbol, String result)
 	{
 		this.nicename = nicename;
 		this.symbol = symbol;
-		this.result = "";
+		if ( result == null ) 
+		{
+			this.result = "";
+		}
+		else
+		{
+			this.result = result;	
+		}
+		
 	}
 
 	public String getNiceName()

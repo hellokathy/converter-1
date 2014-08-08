@@ -24,6 +24,8 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 	private NavigationDrawerFragment mNavigationDrawerFragment;
 
 	private CharSequence mTitle;
+	private boolean inSettings = false;
+	private Integer mDrawerNumber;
 
 	private HashMap<Integer, IconValue> mIcons;
 
@@ -69,10 +71,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 		mIcons.put(27, IconValue.fa_truck);
 		mIcons.put(28, IconValue.fa_wrench);
 		mIcons.put(29, IconValue.fa_arrows_alt);
-		mIcons.put(30, IconValue.fa_thumbs_down);
+		mIcons.put(30, IconValue.fa_bomb);
 		mIcons.put(31, IconValue.fa_tachometer);
 		mIcons.put(32, IconValue.fa_fire);
-		mIcons.put(33, IconValue.fa_arrow_right);
+		mIcons.put(33, IconValue.fa_clock_o);
 		mIcons.put(34, IconValue.fa_flask);
 		mIcons.put(35, IconValue.fa_lock);
 		mIcons.put(36, IconValue.fa_location_arrow);
@@ -89,12 +91,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 
 	public void onSectionAttached(int number)
 	{
+		mDrawerNumber = number - 1;
 		String[] navMenuTitles = getResources().getStringArray(R.array.unit_groups);
-
 		mTitle = navMenuTitles[number - 1];
-
 		getActionBar().setIcon(new IconDrawable(this, mIcons.get(number - 1)).colorRes(R.color.ab_item).actionBarSize());
-
 	}
 
 	public void restoreActionBar()
@@ -103,6 +103,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setTitle(mTitle);
+		getActionBar().setIcon(new IconDrawable(this, mIcons.get(mDrawerNumber)).colorRes(R.color.ab_item).actionBarSize());
 	}
 
 	@Override
@@ -120,18 +121,38 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 	}
 
 	@Override
+	public void onBackPressed()
+	{
+		super.onBackPressed();
+
+		if (inSettings)
+		{
+			this.backFromSettingsFragment();
+			restoreActionBar();
+			return;
+		}
+
+		finish();
+
+	}
+
+	private void backFromSettingsFragment()
+	{
+		inSettings = false;
+		getFragmentManager().popBackStack();
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-
 		int id = item.getItemId();
 
 		if (id == R.id.action_settings)
 		{
-			Toast.makeText(getBaseContext(), "Settings here.", Toast.LENGTH_SHORT).show();
+			inSettings = true;
+			getActionBar().setTitle("Settings");
+			getActionBar().setIcon(new IconDrawable(this, IconValue.fa_cog).colorRes(R.color.ab_item).actionBarSize());
+			getFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).addToBackStack("settings").commit();
 			return true;
 		}
 

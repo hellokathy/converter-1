@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 public class UnitListViewAdapter extends BaseAdapter
 {
-
 	private Context context;
 	private ArrayList<UnitListViewRow> listViewRows;
 
@@ -47,19 +45,20 @@ public class UnitListViewAdapter extends BaseAdapter
 		if (convertView == null)
 		{
 			LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-			convertView = mInflater.inflate(R.layout.unit_listview_row, null);
+			convertView = mInflater.inflate(R.layout.unit_listview_row_relative, null);
 		}
 
 		TextView txtNiceName = (TextView) convertView.findViewById(R.id.unit_listview_row_nicename);
 		TextView txtSymbol = (TextView) convertView.findViewById(R.id.unit_listview_row_symbol);
 		TextView txtResult = (TextView) convertView.findViewById(R.id.unit_listview_row_result);
 
-		String n1 = listViewRows.get(position).getNiceName();
-		String n2 = listViewRows.get(position).getSymbol();
+		String nicename = listViewRows.get(position).getNiceName();
+		String symbol = listViewRows.get(position).getSymbol();
+		String result = listViewRows.get(position).getResult();
 
-		txtNiceName.setText(n1);
-		txtSymbol.setText(n2);
-		txtResult.setText("99.65401");
+		txtNiceName.setText(nicename);
+		txtSymbol.setText(symbol);
+		txtResult.setText(result);
 
 		return convertView;
 	}
