@@ -9,9 +9,8 @@ package com.bliksem.scientificunitconverter;
 
 public final class R {
     public static final class array {
-        public static final int length_units=0x7f0b0000;
-        public static final int unit_groups=0x7f0b0001;
-        public static final int unit_imgs=0x7f0b0002;
+        public static final int unit_groups=0x7f0b0000;
+        public static final int unit_imgs=0x7f0b0001;
     }
     public static final class attr {
         /** 

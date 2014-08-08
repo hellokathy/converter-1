@@ -1,23 +1,10 @@
 package com.bliksem.scientificunitconverter;
 
-import static javax.measure.unit.SI.CENTI;
-
-import static javax.measure.unit.SI.*;
-import static javax.measure.unit.SI.MICRO;
-import static javax.measure.unit.SI.MILLI;
-
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
-import au.com.bytecode.opencsv.CSVReadProc;
-
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.TreeMap;
 
 import javax.measure.quantity.Acceleration;
@@ -25,15 +12,12 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 import android.app.Fragment;
-import android.content.res.AssetFileDescriptor;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -41,13 +25,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
-public class AccelerationFragment extends Fragment implements OnItemSelectedListener
+public class ConverterFragment extends Fragment implements OnItemSelectedListener
 {
 
 	TreeMap<String, String> unitSymbols = new TreeMap<String, String>();
-	TreeMap<String, Unit<Acceleration>> unitObjects = new TreeMap<String, Unit<Acceleration>>();
+	TreeMap<String, Unit<?>> unitObjects = new TreeMap<String, Unit<?>>();
 	TreeMap<String, String> unitNiceNames = new TreeMap<String, String>();
 	TreeMap<String, String> unitConversionUnit = new TreeMap<String, String>();
 	TreeMap<String, Double> unitTimes = new TreeMap<String, Double>();
@@ -63,11 +46,14 @@ public class AccelerationFragment extends Fragment implements OnItemSelectedList
 	EditText amount;
 	ListView listView;
 
-	Unit<Acceleration> STANDARD_CONVERSION = SI.METERS_PER_SQUARE_SECOND;
-	
+	Converter converter;
+	CSVParser csvparser;
+
+	public final static Unit<Acceleration> METERS_PER_SQUARE_SECOND = SI.METRES_PER_SQUARE_SECOND;
+
 	DecimalFormat decimalFormat;
 
-	public AccelerationFragment()
+	public ConverterFragment()
 	{
 
 	}
@@ -75,7 +61,36 @@ public class AccelerationFragment extends Fragment implements OnItemSelectedList
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+
+		Bundle b = getArguments();
+		Integer unitGroup = b.getInt("unitGroup");
+
+		converter = Converter.getInstance();
+		converter.initUnitMaps();
+		
+		csvparser = CSVParser.getInstance();
+
+		try
+		{
+			csvparser.parse_csv(this.getAssetInputStream(unitGroup));
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		unitSymbols = csvparser.getUnitSymbols();
+		unitNiceNames = csvparser.getUnitNiceNames();
+		unitConversionUnit = csvparser.getUnitConversionUnit();
+		unitTimes = csvparser.getUnitTimes();
+		unitObjects = converter.getUnitObjects(unitConversionUnit, unitTimes);
+
 		this.initialiseConverter();
+		
+		specialChars.put("[squared]", "\u00B2");
+		specialChars.put("[micro]", "\u00B5");
+		specialChars.put("[earth]", "\u2080");
+		
+		decimalFormat = new DecimalFormat("#.##########");
 
 		View rootView = inflater.inflate(R.layout.acceleration_fragment, container, false);
 
@@ -147,14 +162,14 @@ public class AccelerationFragment extends Fragment implements OnItemSelectedList
 		{
 			String nicename = unitNiceNames.get(key);
 			String symbol = unitSymbols.get(key);
-			
-			//////////////
+
+			// ///////////
 			// convert! //
-			//////////////
-			
-			Double d = unitObjects.get("CENTIMETERS_PER_SQUARE_SECOND").getConverterTo( unitObjects.get( key )).convert(amount);
+			// ///////////
+
+			Double d = unitObjects.get("CENTIMETERS_PER_SQUARE_SECOND").getConverterTo(unitObjects.get(key)).convert(amount);
 			String result = decimalFormat.format(d).toString();
-			
+
 			// replace special characters
 			for (String k : specialChars.keySet())
 			{
@@ -170,72 +185,39 @@ public class AccelerationFragment extends Fragment implements OnItemSelectedList
 
 	private void initialiseConverter()
 	{
-		// 1. initialize special characters
-
-		specialChars.put("[squared]", "\u00B2");
-		specialChars.put("[micro]", "\u00B5");
-		specialChars.put("[earth]", "\u2080");
-
-		// 2. read appropriate csv assets file
-
-		CSVReader reader = null;
-		try
-		{
-			reader = new CSVReader(new InputStreamReader(getActivity().getAssets().open("Acceleration.csv")));
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		String[] nextLine;
-		try
-		{
-			while ((nextLine = reader.readNext()) != null)
-			{
-				if (nextLine[0].equals("name") && nextLine[1].equals("symbol"))
-				{
-					continue;
-				}
-
-				unitSymbols.put(nextLine[0], nextLine[1]);
-				unitNiceNames.put(nextLine[0], nextLine[2]);
-				unitConversionUnit.put(nextLine[0], nextLine[3]);
-				unitTimes.put(nextLine[0], Double.parseDouble(nextLine[4]));
-			}
-		} catch (NumberFormatException e)
-		{
-			e.printStackTrace();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-
-		try
-		{
-			reader.close();
-		} catch (IOException e)
-		{
-			e.printStackTrace();
-		}
 
 		// 3. populate unitObjects TreeMap
 
 		for (String key : unitNiceNames.keySet())
 		{
-			Unit<Acceleration> newObj = null;
+			Unit<?> newObj = null;
 			if (unitTimes.get(key).equals(1.0))
 			{
-				newObj = STANDARD_CONVERSION;
+				newObj = METERS_PER_SQUARE_SECOND;
 			} else
 			{
-				newObj = STANDARD_CONVERSION.times(unitTimes.get(key));
+				newObj = METERS_PER_SQUARE_SECOND.times(unitTimes.get(key));
 			}
 
 			unitObjects.put(key, newObj);
 		}
-		
-		// 4. Decimal Format
-	    decimalFormat = new DecimalFormat("#.##########");
+
+	}
+
+	private InputStream getAssetInputStream(Integer unitGroup) throws IOException
+	{
+		InputStream is = null;
+
+		switch (unitGroup) {
+		case 1:
+			is = getActivity().getAssets().open("Acceleration.csv");
+			break;
+		default:
+			is = getActivity().getAssets().open("Acceleration.csv");
+			break;
+		}
+		return is;
+
 	}
 
 }

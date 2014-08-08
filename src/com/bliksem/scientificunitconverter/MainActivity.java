@@ -72,7 +72,7 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 		mIcons.put(28, IconValue.fa_wrench);
 		mIcons.put(29, IconValue.fa_arrows_alt);
 		mIcons.put(30, IconValue.fa_bomb);
-		mIcons.put(31, IconValue.fa_tachometer);
+		mIcons.put(31, IconValue.fa_fighter_jet);
 		mIcons.put(32, IconValue.fa_fire);
 		mIcons.put(33, IconValue.fa_clock_o);
 		mIcons.put(34, IconValue.fa_flask);

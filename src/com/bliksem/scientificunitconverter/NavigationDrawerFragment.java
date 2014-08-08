@@ -121,7 +121,6 @@ public class NavigationDrawerFragment extends Fragment
 
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
-
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
@@ -195,18 +194,14 @@ public class NavigationDrawerFragment extends Fragment
 
 		Fragment fragment = null;
 
-		switch (position) {
-		case 0:
-			fragment = new AccelerationFragment();
-			break;
-		default:
-			fragment = new AccelerationFragment();
-			break;
-		}
+		Bundle bundle = new Bundle();
+		bundle.putInt("unitGroup", position);
+
+		fragment = new ConverterFragment();
+		fragment.setArguments(bundle);
 
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
-
 	}
 
 	@Override
