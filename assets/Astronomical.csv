@@ -1,0 +1,8 @@
+name,symbol,nicename,conversionunit,times,
+"MILE","mi","mile","",,
+"METER","m","meter","",,
+"KILOMETER","km","kilometer","",,
+"ASTRONOMICAL_UNIT","AU","astronomical unit","",,
+"LIGHT_YEAR","ly","light year","",,
+"LIGHT_SECOND","ls","light second","METER",299792458,
+"PARSEC","pc","parsec","",,

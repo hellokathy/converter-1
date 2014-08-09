@@ -49,11 +49,11 @@ public class CSVParser
 	{
 		return unitNiceNames;
 	}
-	
+
 	public void parse_csv(InputStream is)
 	{
 
-		// populates unitSymbols, unitConversionUnit, unitNiceNames & unitTimes
+		// populates unitSymbols, unitNiceNames, unitTimes & unitConversionUnit
 
 		CSVReader reader = null;
 		reader = new CSVReader(new InputStreamReader(is));
@@ -70,6 +70,12 @@ public class CSVParser
 
 				unitSymbols.put(nextLine[0], nextLine[1]);
 				unitNiceNames.put(nextLine[0], nextLine[2]);
+
+				if (nextLine[3].isEmpty())
+				{
+					continue;
+				}
+
 				unitConversionUnit.put(nextLine[0], nextLine[3]);
 				unitTimes.put(nextLine[0], Double.parseDouble(nextLine[4]));
 			}

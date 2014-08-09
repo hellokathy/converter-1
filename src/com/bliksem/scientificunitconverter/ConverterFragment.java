@@ -30,7 +30,7 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 {
 
 	TreeMap<String, String> unitSymbols = new TreeMap<String, String>();
-	TreeMap<String, Unit<?>> unitObjects = new TreeMap<String, Unit<?>>();
+	HashMap<String, Unit<?>> unitObjects = new HashMap<String, Unit<?>>();
 	TreeMap<String, String> unitNiceNames = new TreeMap<String, String>();
 	TreeMap<String, String> unitConversionUnit = new TreeMap<String, String>();
 	TreeMap<String, Double> unitTimes = new TreeMap<String, Double>();
@@ -66,8 +66,6 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 		Integer unitGroup = b.getInt("unitGroup");
 
 		converter = Converter.getInstance();
-		converter.initUnitMaps();
-		
 		csvparser = CSVParser.getInstance();
 
 		try
@@ -82,14 +80,13 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 		unitNiceNames = csvparser.getUnitNiceNames();
 		unitConversionUnit = csvparser.getUnitConversionUnit();
 		unitTimes = csvparser.getUnitTimes();
-		unitObjects = converter.getUnitObjects(unitConversionUnit, unitTimes);
-
-		this.initialiseConverter();
+		unitObjects = converter.getAllUnits(unitConversionUnit, unitTimes);
 		
+
 		specialChars.put("[squared]", "\u00B2");
 		specialChars.put("[micro]", "\u00B5");
 		specialChars.put("[earth]", "\u2080");
-		
+
 		decimalFormat = new DecimalFormat("#.##########");
 
 		View rootView = inflater.inflate(R.layout.acceleration_fragment, container, false);
@@ -167,7 +164,9 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 			// convert! //
 			// ///////////
 
-			Double d = unitObjects.get("CENTIMETERS_PER_SQUARE_SECOND").getConverterTo(unitObjects.get(key)).convert(amount);
+			//Double d = unitObjects.get("CENTIMETERS_PER_SQUARE_SECOND").getConverterTo(unitObjects.get(key)).convert(amount);
+			Double d = unitObjects.get("PARSEC").getConverterTo(unitObjects.get(key)).convert(amount);
+
 			String result = decimalFormat.format(d).toString();
 
 			// replace special characters
@@ -183,27 +182,6 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 
 	}
 
-	private void initialiseConverter()
-	{
-
-		// 3. populate unitObjects TreeMap
-
-		for (String key : unitNiceNames.keySet())
-		{
-			Unit<?> newObj = null;
-			if (unitTimes.get(key).equals(1.0))
-			{
-				newObj = METERS_PER_SQUARE_SECOND;
-			} else
-			{
-				newObj = METERS_PER_SQUARE_SECOND.times(unitTimes.get(key));
-			}
-
-			unitObjects.put(key, newObj);
-		}
-
-	}
-
 	private InputStream getAssetInputStream(Integer unitGroup) throws IOException
 	{
 		InputStream is = null;
@@ -211,6 +189,9 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 		switch (unitGroup) {
 		case 1:
 			is = getActivity().getAssets().open("Acceleration.csv");
+			break;
+		case 4: 
+			is = getActivity().getAssets().open("Astronomical.csv");
 			break;
 		default:
 			is = getActivity().getAssets().open("Acceleration.csv");

@@ -59,8 +59,11 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
 import javax.measure.unit.NonSI;
+import javax.measure.unit.ProductUnit;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
+
+import android.util.Log;
 
 public class Converter
 {
@@ -74,6 +77,28 @@ public class Converter
 	}
 
 	private static final Converter INSTANCE = new Converter();
+
+	// ///////////
+	// SI Units //
+	// ///////////
+
+	public static final Unit<Length> METER = METRE;
+	public static final Unit<Mass> GRAM = KILOGRAM.divide(1000);
+	public static final Unit<Temperature> CELSIUS = KELVIN.plus(273.15);
+	public static final Unit<Velocity> METRES_PER_SECOND = new ProductUnit<Velocity>(METRE.divide(SECOND));
+	public static final Unit<Velocity> METERS_PER_SECOND = METRES_PER_SECOND;
+	public static final Unit<Acceleration> METRES_PER_SQUARE_SECOND = new ProductUnit<Acceleration>(METRES_PER_SECOND.divide(SECOND));
+	public static final Unit<Acceleration> METERS_PER_SQUARE_SECOND = METRES_PER_SQUARE_SECOND;
+	public static final Unit<Area> SQUARE_METRE = new ProductUnit<Area>(METRE.times(METRE));
+	public static final Unit<Volume> CUBIC_METRE = new ProductUnit<Volume>(SQUARE_METRE.times(METRE));
+	public static final Unit<Length> KILOMETRE = METER.times(1000);
+	public static final Unit<Length> KILOMETER = KILOMETRE;
+	public static final Unit<Length> CENTIMETRE = METRE.divide(100);
+	public static final Unit<Length> CENTIMETER = CENTIMETRE;
+	public static final Unit<Length> MILLIMETRE = METRE.divide(1000);
+	public static final Unit<Length> MILLIMETER = MILLIMETRE;
+	public static final Unit<Velocity> METRE_PER_SECOND = METRES_PER_SECOND;
+	public static final Unit<Acceleration> METRE_PER_SQUARE_SECOND = METRES_PER_SQUARE_SECOND;
 
 	// //////////////////
 	// NonSI Constants //
@@ -178,110 +203,136 @@ public class Converter
 	public static final Unit<ElectricCharge> FARADAY = (COULOMB.times(ELEMENTARY_CHARGE * AVOGADRO_CONSTANT)); // e/mol
 	public static final Unit<ElectricCharge> FRANKLIN = (COULOMB.times(3.3356e-10));
 
-	// ////////////
-	// SI Units //
-	// ////////////
+	HashMap<String, Unit<?>> units;
 
-	Unit<Acceleration> METERS_PER_SECOND_SQUARED = SI.METERS_PER_SQUARE_SECOND;
+	// TreeMap<String, Unit<?>> unitObjects = new TreeMap<String, Unit<?>>();
 
-	HashMap<String, Unit<?>> nonSIMap;
-	HashMap<String, Unit<?>> sIMap;
-
-	TreeMap<String, Unit<?>> unitObjects = new TreeMap<String, Unit<?>>();
-
-	public TreeMap<String, Unit<?>> getUnitObjects(TreeMap<String, String> unitConversionUnit, TreeMap<String, Double> unitTimes)
+	public HashMap<String, Unit<?>> getAllUnits(TreeMap<String, String> unitConversionUnit, TreeMap<String, Double> unitTimes)
 	{
-		return unitObjects;
+		// 1. add SI & NonSI Unit definitions
+
+		this.initUnitObjects();
+
+		// 2. add custom units
+
+		for (String key : unitConversionUnit.keySet())
+		{
+			Unit<?> newUnit = units.get(unitConversionUnit.get(key)).times(unitTimes.get(key));
+			units.put(key, newUnit);
+		}
+
+		return units;
 	}
 
-	public void initUnitMaps()
+	private void initUnitObjects()
 	{
-        nonSIMap = new HashMap<String, Unit<?>>();
-        sIMap = new HashMap<String, Unit<?>>();
-        
-        nonSIMap.put("PERCENT", PERCENT);
-        nonSIMap.put("DECIBEL", DECIBEL);
-        nonSIMap.put("ATOM", ATOM);
-        nonSIMap.put("FOOT", FOOT);
-        nonSIMap.put("FOOT_SURVEY_US", FOOT_SURVEY_US);
-        nonSIMap.put("YARD", YARD);
-        nonSIMap.put("INCH", INCH);
-        nonSIMap.put("MILE", MILE);
-        nonSIMap.put("NAUTICAL_MILE", NAUTICAL_MILE);
-        nonSIMap.put("ANGSTROM", ANGSTROM);
-        nonSIMap.put("LIGHT_YEAR", LIGHT_YEAR);
-        nonSIMap.put("PARSEC", PARSEC);
-        nonSIMap.put("POINT", POINT);
-        nonSIMap.put("PIXEL", PIXEL);
-        nonSIMap.put("COMPUTER_POINT", COMPUTER_POINT);
-        nonSIMap.put("MINUTE", MINUTE);
-        nonSIMap.put("HOUR", HOUR);
-        nonSIMap.put("DAY", DAY);
-        nonSIMap.put("WEEK", WEEK);
-        nonSIMap.put("YEAR", YEAR);
-        nonSIMap.put("MONTH", MONTH);
-        nonSIMap.put("DAY_SIDEREAL", DAY_SIDEREAL);
-        nonSIMap.put("YEAR_CALENDAR", YEAR_CALENDAR);
-        nonSIMap.put("POUND", POUND);
-        nonSIMap.put("OUNCE", OUNCE);
-        nonSIMap.put("TON_US", TON_US);
-        nonSIMap.put("TON_UK", TON_UK);
-        nonSIMap.put("METRIC_TON", METRIC_TON);
-        nonSIMap.put("RANKINE", RANKINE);
-        nonSIMap.put("FAHRENHEIT", FAHRENHEIT);
-        nonSIMap.put("REVOLUTION", REVOLUTION);
-        nonSIMap.put("DEGREE_ANGLE", DEGREE_ANGLE);
-        nonSIMap.put("MINUTE_ANGLE", MINUTE_ANGLE);
-        nonSIMap.put("SECOND_ANGLE", SECOND_ANGLE);
-        nonSIMap.put("CENTIRADIAN", CENTIRADIAN);
-        nonSIMap.put("GRADE", GRADE);
-        nonSIMap.put("KILOMETRES_PER_HOUR", KILOMETRES_PER_HOUR);
-        nonSIMap.put("MACH", MACH);
-        nonSIMap.put("C", C);
-        nonSIMap.put("ARE", ARE);
-        nonSIMap.put("HECTARE", HECTARE);
-        nonSIMap.put("BYTE", BYTE);
-        nonSIMap.put("OCTET", OCTET);
-        nonSIMap.put("ERG", ERG);
-        nonSIMap.put("LAMBERT", LAMBERT);
-        nonSIMap.put("MAXWELL", MAXWELL);
-        nonSIMap.put("GAUSS", GAUSS);
-        nonSIMap.put("DYNE", DYNE);
-        nonSIMap.put("HORSEPOWER", HORSEPOWER);
-        nonSIMap.put("ATMOSPHERE", ATMOSPHERE);
-        nonSIMap.put("BAR", BAR);
-        nonSIMap.put("INCH_OF_MERCURY", INCH_OF_MERCURY);
-        nonSIMap.put("RAD", RAD);
-        nonSIMap.put("REM", REM);
-        nonSIMap.put("LITRE", LITRE);
-        nonSIMap.put("LITER", LITER);
-        nonSIMap.put("CUBIC_INCH", CUBIC_INCH);
-        nonSIMap.put("GALLON_LIQUID_US", GALLON_LIQUID_US);
-        nonSIMap.put("GALLON_DRY_US", GALLON_DRY_US);
-        nonSIMap.put("GALLON_UK", GALLON_UK);
-        nonSIMap.put("OUNCE_LIQUID_UK", OUNCE_LIQUID_UK);
-        nonSIMap.put("ROENTGEN", ROENTGEN);
-        nonSIMap.put("MILES_PER_HOUR", MILES_PER_HOUR);
-        nonSIMap.put("KNOT", KNOT);
-        nonSIMap.put("G", G);
-        nonSIMap.put("KILOGRAM_FORCE", KILOGRAM_FORCE);
-        nonSIMap.put("POUND_FORCE", POUND_FORCE);
-        nonSIMap.put("GILBERT", GILBERT);
-        nonSIMap.put("ELECTRON_VOLT", ELECTRON_VOLT);
-        nonSIMap.put("MILLIMETER_OF_MERCURY", MILLIMETER_OF_MERCURY);
-        nonSIMap.put("SPHERE", SPHERE);
-        nonSIMap.put("CURIE", CURIE);
-        nonSIMap.put("RUTHERFORD", RUTHERFORD);
-        nonSIMap.put("OUNCE_LIQUID_US", OUNCE_LIQUID_US);
-        nonSIMap.put("POISE", POISE);
-        nonSIMap.put("STOKE", STOKE);
-        nonSIMap.put("ASTRONOMICAL_UNIT", ASTRONOMICAL_UNIT);
-        nonSIMap.put("YEAR_SIDEREAL", YEAR_SIDEREAL);
-        nonSIMap.put("ATOMIC_MASS", ATOMIC_MASS);
-        nonSIMap.put("ELECTRON_MASS", ELECTRON_MASS);
-        nonSIMap.put("E", E);
-        nonSIMap.put("FARADAY", FARADAY);
-        nonSIMap.put("FRANKLIN", FRANKLIN);   
+		units = new HashMap<String, Unit<?>>();
+
+		// SI //
+		
+		units.put("METER", METER);
+		units.put("GRAM", GRAM);
+		units.put("CELSIUS", CELSIUS);
+		units.put("METRES_PER_SECOND", METRES_PER_SECOND);
+		units.put("METERS_PER_SECOND", METERS_PER_SECOND);
+		units.put("METRES_PER_SQUARE_SECOND", METRES_PER_SQUARE_SECOND);
+		units.put("METERS_PER_SQUARE_SECOND", METERS_PER_SQUARE_SECOND);
+		units.put("SQUARE_METRE", SQUARE_METRE);
+		units.put("CUBIC_METRE", CUBIC_METRE);
+		units.put("KILOMETRE", KILOMETRE);
+		units.put("KILOMETER", KILOMETER);
+		units.put("CENTIMETRE", CENTIMETRE);
+		units.put("CENTIMETER", CENTIMETER);
+		units.put("MILLIMETRE", MILLIMETRE);
+		units.put("MILLIMETER", MILLIMETER);
+		units.put("METRE_PER_SECOND", METRE_PER_SECOND);
+		units.put("METRE_PER_SQUARE_SECOND", METRE_PER_SQUARE_SECOND);
+
+		// NonSI //
+		
+		units.put("PERCENT", PERCENT);
+		units.put("DECIBEL", DECIBEL);
+		units.put("ATOM", ATOM);
+		units.put("FOOT", FOOT);
+		units.put("FOOT_SURVEY_US", FOOT_SURVEY_US);
+		units.put("YARD", YARD);
+		units.put("INCH", INCH);
+		units.put("MILE", MILE);
+		units.put("NAUTICAL_MILE", NAUTICAL_MILE);
+		units.put("ANGSTROM", ANGSTROM);
+		units.put("LIGHT_YEAR", LIGHT_YEAR);
+		units.put("PARSEC", PARSEC);
+		units.put("POINT", POINT);
+		units.put("PIXEL", PIXEL);
+		units.put("COMPUTER_POINT", COMPUTER_POINT);
+		units.put("MINUTE", MINUTE);
+		units.put("HOUR", HOUR);
+		units.put("DAY", DAY);
+		units.put("WEEK", WEEK);
+		units.put("YEAR", YEAR);
+		units.put("MONTH", MONTH);
+		units.put("DAY_SIDEREAL", DAY_SIDEREAL);
+		units.put("YEAR_CALENDAR", YEAR_CALENDAR);
+		units.put("POUND", POUND);
+		units.put("OUNCE", OUNCE);
+		units.put("TON_US", TON_US);
+		units.put("TON_UK", TON_UK);
+		units.put("METRIC_TON", METRIC_TON);
+		units.put("RANKINE", RANKINE);
+		units.put("FAHRENHEIT", FAHRENHEIT);
+		units.put("REVOLUTION", REVOLUTION);
+		units.put("DEGREE_ANGLE", DEGREE_ANGLE);
+		units.put("MINUTE_ANGLE", MINUTE_ANGLE);
+		units.put("SECOND_ANGLE", SECOND_ANGLE);
+		units.put("CENTIRADIAN", CENTIRADIAN);
+		units.put("GRADE", GRADE);
+		units.put("KILOMETRES_PER_HOUR", KILOMETRES_PER_HOUR);
+		units.put("MACH", MACH);
+		units.put("C", C);
+		units.put("ARE", ARE);
+		units.put("HECTARE", HECTARE);
+		units.put("BYTE", BYTE);
+		units.put("OCTET", OCTET);
+		units.put("ERG", ERG);
+		units.put("LAMBERT", LAMBERT);
+		units.put("MAXWELL", MAXWELL);
+		units.put("GAUSS", GAUSS);
+		units.put("DYNE", DYNE);
+		units.put("HORSEPOWER", HORSEPOWER);
+		units.put("ATMOSPHERE", ATMOSPHERE);
+		units.put("BAR", BAR);
+		units.put("INCH_OF_MERCURY", INCH_OF_MERCURY);
+		units.put("RAD", RAD);
+		units.put("REM", REM);
+		units.put("LITRE", LITRE);
+		units.put("LITER", LITER);
+		units.put("CUBIC_INCH", CUBIC_INCH);
+		units.put("GALLON_LIQUID_US", GALLON_LIQUID_US);
+		units.put("GALLON_DRY_US", GALLON_DRY_US);
+		units.put("GALLON_UK", GALLON_UK);
+		units.put("OUNCE_LIQUID_UK", OUNCE_LIQUID_UK);
+		units.put("ROENTGEN", ROENTGEN);
+		units.put("MILES_PER_HOUR", MILES_PER_HOUR);
+		units.put("KNOT", KNOT);
+		units.put("G", G);
+		units.put("KILOGRAM_FORCE", KILOGRAM_FORCE);
+		units.put("POUND_FORCE", POUND_FORCE);
+		units.put("GILBERT", GILBERT);
+		units.put("ELECTRON_VOLT", ELECTRON_VOLT);
+		units.put("MILLIMETER_OF_MERCURY", MILLIMETER_OF_MERCURY);
+		units.put("SPHERE", SPHERE);
+		units.put("CURIE", CURIE);
+		units.put("RUTHERFORD", RUTHERFORD);
+		units.put("OUNCE_LIQUID_US", OUNCE_LIQUID_US);
+		units.put("POISE", POISE);
+		units.put("STOKE", STOKE);
+		units.put("ASTRONOMICAL_UNIT", ASTRONOMICAL_UNIT);
+		units.put("YEAR_SIDEREAL", YEAR_SIDEREAL);
+		units.put("ATOMIC_MASS", ATOMIC_MASS);
+		units.put("ELECTRON_MASS", ELECTRON_MASS);
+		units.put("E", E);
+		units.put("FARADAY", FARADAY);
+		units.put("FRANKLIN", FRANKLIN);
 	}
-	
+
 }

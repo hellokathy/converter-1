@@ -190,12 +190,13 @@ public class NavigationDrawerFragment extends Fragment
 		if (mCallbacks != null)
 		{
 			mCallbacks.onNavigationDrawerItemSelected(position);
-		}
+		};
 
 		Fragment fragment = null;
 
 		Bundle bundle = new Bundle();
-		bundle.putInt("unitGroup", position);
+		//bundle.putInt("unitGroup", position);
+		bundle.putInt("unitGroup", 4);
 
 		fragment = new ConverterFragment();
 		fragment.setArguments(bundle);

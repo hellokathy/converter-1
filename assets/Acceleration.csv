@@ -1,5 +1,5 @@
 name,symbol,nicename,conversionunit,times,
-"METERS_PER_SQUARE_SECOND","m/s[squared]","meter/sec[squared]","METERS_PER_SQUARE_SECOND",1,
+"METERS_PER_SQUARE_SECOND","m/s[squared]","meter/sec[squared]","",,
 "CENTIMETERS_PER_SQUARE_SECOND","cm/s[squared]","centimeter/sec[squared]","METERS_PER_SQUARE_SECOND",0.01,
 "FOOT_PER_SQUARE_SECOND","ft/s[squared]","foot/sec[squared]","METERS_PER_SQUARE_SECOND",0.30480,
 "STANDARD_GRAVITY","g[earth]","gravity","METERS_PER_SQUARE_SECOND",9.80665,
