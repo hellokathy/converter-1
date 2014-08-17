@@ -72,7 +72,7 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 
 		Bundle b = getArguments();
 		Integer unitGroup = b.getInt("unitGroup");
-
+		
 		converter = Converter.getInstance();
 		dataStore = DataStore.getInstance();
 	    jsonParser = JSONParser.getInstance();
@@ -108,8 +108,12 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 
 		amount = (EditText) rootView.findViewById(R.id.amount);
 		spinner = (Spinner) rootView.findViewById(R.id.spinner);
+		spinner_position = 0;
 		listView = (ListView) rootView.findViewById(R.id.listview);
-
+		
+		niceNamesList = new ArrayList<String>();
+		niceNamesList.clear();
+		
 		return rootView;
 	}
 
@@ -117,9 +121,12 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-
-		this.populateDataSet(spinner_position, Double.parseDouble(amount.getText().toString()));
-
+		
+		for (String key : unitNiceNames.keySet())
+		{
+			niceNamesList.add(unitNiceNames.get(key));
+		}
+	
 		amount.addTextChangedListener(new TextWatcher()
 		{
 			public void afterTextChanged(Editable s)
@@ -136,6 +143,8 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 			{
 			}
 		});
+		
+		this.populateDataSet(spinner_position, Double.parseDouble(amount.getText().toString()));
 
 		spinner.setOnItemSelectedListener(this);
 
@@ -148,14 +157,20 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 		unitListViewAdapter = new UnitListViewAdapter(getActivity().getApplicationContext(), unitListViewRows);
 
 		listView.setAdapter(unitListViewAdapter);
+		
+		
+
 	}
 
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3)
 	{
 		spinner_position = position;
+		listView.setAdapter(null);
 		this.populateDataSet(position, Double.parseDouble(amount.getText().toString()));
+		listView.setAdapter(unitListViewAdapter);
 		unitListViewAdapter.notifyDataSetChanged();
+		
 	}
 
 	@Override
@@ -165,10 +180,9 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 
 	private void populateDataSet(Integer position, Double amount)
 	{
+		
 		unitListViewRows = new ArrayList<UnitListViewRow>();
 		
-		niceNamesList = new ArrayList<String>();
-
 		for (String key : unitNiceNames.keySet())
 		{
 			String nicename = unitNiceNames.get(key);
@@ -178,8 +192,15 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 			// convert! //
 			// ///////////
 
-			Double d = unitObjects.get("CENTIMETERS_PER_SQUARE_SECOND").getConverterTo(unitObjects.get(key)).convert(amount);
+		//	Log.d("VIC", "We wanna convert from " + unitNiceNames.);
+			Log.d("VIC", " to " + key );
+			Log.d("VIC", " with this amount: " + amount.toString());
+			
+			//Log.d("VIC", "unitNiceNames.get(position));
+			//Double d = unitObjects.get("CENTIMETERS_PER_SQUARE_SECOND").getConverterTo(unitObjects.get(key)).convert(amount);
 			//Double d = unitObjects.get("PARSEC").getConverterTo(unitObjects.get(key)).convert(amount);
+			//Double d = unitObjects.get(position).getConverterTo(unitObjects.get(key)).convert(amount);
+			Double d = 10000.0;
 
 			String result = decimalFormat.format(d).toString();
 
@@ -191,7 +212,6 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 			}
 
 			unitListViewRows.add(new UnitListViewRow(nicename, symbol, result));
-			niceNamesList.add(nicename);
 		}
 
 	}

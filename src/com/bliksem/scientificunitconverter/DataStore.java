@@ -144,12 +144,18 @@ public class DataStore
 			String niceName = unit.getString("nicename");
 			String conversionUnit = unit.getString("conversionunit");
 			String times = unit.getString("times");
-			
+
+			Log.d("VIC", name + " " + symbol + " " + niceName + " " + conversionUnit + " " + times);
+
 			unitNiceNames.put(name, niceName);
-			unitConversionUnits.put(name, conversionUnit);
-			if ( ! symbol.isEmpty()) unitSymbols.put(name, symbol);
-			if ( ! times.isEmpty()) unitTimes.put(name, Double.parseDouble(times));	
-			
+			unitSymbols.put(name, symbol);
+
+			if (conversionUnit.length() > 0)
+				unitConversionUnits.put(name, conversionUnit);
+
+			if (times.length() > 0)
+				unitTimes.put(name, Double.parseDouble(times));
+
 		}
 	}
 
