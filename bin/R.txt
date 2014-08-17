@@ -1,5 +1,3 @@
-int array unit_groups 0x7f0b0000
-int array unit_imgs 0x7f0b0001
 int attr adSize 0x7f010000
 int attr adSizes 0x7f010001
 int attr adUnitId 0x7f010002
@@ -147,8 +145,8 @@ int layout unit_listview_row 0x7f030007
 int layout unit_listview_row_relative 0x7f030008
 int layout units_fragment 0x7f030009
 int layout weight_fragment 0x7f03000a
-int menu global 0x7f0c0000
-int menu main 0x7f0c0001
+int menu global 0x7f0b0000
+int menu main 0x7f0b0001
 int string action_settings 0x7f060025
 int string app_name 0x7f060020
 int string auth_client_needs_enabling_title 0x7f060001

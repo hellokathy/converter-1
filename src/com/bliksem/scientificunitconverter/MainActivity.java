@@ -1,6 +1,6 @@
 package com.bliksem.scientificunitconverter;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify.IconValue;
@@ -26,58 +25,26 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 	private CharSequence mTitle;
 	private boolean inSettings = false;
 	private Integer mDrawerNumber;
-
-	private HashMap<Integer, IconValue> mIcons;
+	
+	DataStore dataStore;
+	TreeMap<Integer, String> groupNames = new TreeMap<Integer, String>();
+	TreeMap<Integer, String> groupIcons = new TreeMap<Integer, String>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
+		
+		dataStore = DataStore.getInstance();
+		if ( ! dataStore.isInitDone() ) dataStore.init(getApplicationContext());
+		
+		groupNames = dataStore.getGroupNames();
+		groupIcons = dataStore.getGroupIcons();
+			
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
 		mTitle = getTitle();
-
-		mIcons = new HashMap<Integer, IconValue>();
-
-		mIcons.put(0, IconValue.fa_tachometer);
-		mIcons.put(1, IconValue.fa_crop);
-		mIcons.put(2, IconValue.fa_arrows_alt);
-		mIcons.put(3, IconValue.fa_space_shuttle);
-		mIcons.put(4, IconValue.fa_tint);
-		mIcons.put(5, IconValue.fa_bolt);
-		mIcons.put(6, IconValue.fa_database);
-		mIcons.put(7, IconValue.fa_cutlery);
-		mIcons.put(8, IconValue.fa_upload);
-		mIcons.put(9, IconValue.fa_gavel);
-		mIcons.put(10, IconValue.fa_bars);
-		mIcons.put(11, IconValue.fa_bolt);
-		mIcons.put(12, IconValue.fa_bolt);
-		mIcons.put(13, IconValue.fa_bolt);
-		mIcons.put(14, IconValue.fa_shield);
-		mIcons.put(15, IconValue.fa_lightbulb_o);
-		mIcons.put(16, IconValue.fa_fire);
-		mIcons.put(17, IconValue.fa_arrows_h);
-		mIcons.put(18, IconValue.fa_star);
-		mIcons.put(19, IconValue.fa_star_half_full);
-		mIcons.put(20, IconValue.fa_star_o);
-		mIcons.put(21, IconValue.fa_magnet);
-		mIcons.put(22, IconValue.fa_magnet);
-		mIcons.put(23, IconValue.fa_magnet);
-		mIcons.put(24, IconValue.fa_magnet);
-		mIcons.put(25, IconValue.fa_exchange);
-		mIcons.put(26, IconValue.fa_square);
-		mIcons.put(27, IconValue.fa_truck);
-		mIcons.put(28, IconValue.fa_wrench);
-		mIcons.put(29, IconValue.fa_arrows_alt);
-		mIcons.put(30, IconValue.fa_bomb);
-		mIcons.put(31, IconValue.fa_fighter_jet);
-		mIcons.put(32, IconValue.fa_fire);
-		mIcons.put(33, IconValue.fa_clock_o);
-		mIcons.put(34, IconValue.fa_flask);
-		mIcons.put(35, IconValue.fa_lock);
-		mIcons.put(36, IconValue.fa_location_arrow);
 
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout));
 	}
@@ -92,9 +59,10 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 	public void onSectionAttached(int number)
 	{
 		mDrawerNumber = number - 1;
-		String[] navMenuTitles = getResources().getStringArray(R.array.unit_groups);
-		mTitle = navMenuTitles[number - 1];
-		getActionBar().setIcon(new IconDrawable(this, mIcons.get(number - 1)).colorRes(R.color.ab_item).actionBarSize());
+		mTitle = groupNames.get(mDrawerNumber);
+		IconValue v = IconValue.valueOf(groupIcons.get(mDrawerNumber));
+		IconDrawable c = new IconDrawable(this,v).colorRes(R.color.ab_item).actionBarSize();
+		getActionBar().setIcon(c);
 	}
 
 	public void restoreActionBar()
@@ -103,7 +71,9 @@ public class MainActivity extends Activity implements NavigationDrawerFragment.N
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setDisplayShowTitleEnabled(true);
 		actionBar.setTitle(mTitle);
-		getActionBar().setIcon(new IconDrawable(this, mIcons.get(mDrawerNumber)).colorRes(R.color.ab_item).actionBarSize());
+		IconValue v = IconValue.valueOf(groupIcons.get(mDrawerNumber));
+		IconDrawable c = new IconDrawable(this,v).colorRes(R.color.ab_item).actionBarSize();
+		getActionBar().setIcon(c);
 	}
 
 	@Override

@@ -11,6 +11,9 @@ import javax.measure.quantity.Acceleration;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.Editable;
@@ -32,9 +35,13 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 	TreeMap<String, String> unitSymbols = new TreeMap<String, String>();
 	HashMap<String, Unit<?>> unitObjects = new HashMap<String, Unit<?>>();
 	TreeMap<String, String> unitNiceNames = new TreeMap<String, String>();
-	TreeMap<String, String> unitConversionUnit = new TreeMap<String, String>();
+	TreeMap<String, String> unitConversionUnits = new TreeMap<String, String>();
 	TreeMap<String, Double> unitTimes = new TreeMap<String, Double>();
 
+	private TreeMap<Integer, String> groupNames = new TreeMap<Integer, String>();
+	private TreeMap<Integer, String> groupIcons = new TreeMap<Integer, String>();
+	private TreeMap<Integer, JSONObject> groupJSONObjects = new TreeMap<Integer, JSONObject>();
+	
 	private ArrayList<UnitListViewRow> unitListViewRows;
 	private UnitListViewAdapter unitListViewAdapter;
 	ArrayList<String> niceNamesList;
@@ -47,7 +54,8 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 	ListView listView;
 
 	Converter converter;
-	CSVParser csvparser;
+	JSONParser jsonParser;
+	DataStore dataStore;
 
 	public final static Unit<Acceleration> METERS_PER_SQUARE_SECOND = SI.METRES_PER_SQUARE_SECOND;
 
@@ -66,23 +74,30 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 		Integer unitGroup = b.getInt("unitGroup");
 
 		converter = Converter.getInstance();
-		csvparser = CSVParser.getInstance();
-
-		try
+		dataStore = DataStore.getInstance();
+	    jsonParser = JSONParser.getInstance();
+	    
+	    if ( ! dataStore.isInitDone() ) dataStore.init(getActivity().getApplicationContext());
+	    
+	    groupNames = dataStore.getGroupNames();
+	    groupJSONObjects = dataStore.getGroupJSONObjects();
+	    groupIcons = dataStore.getGroupIcons();
+	    
+	    try
 		{
-			csvparser.parse_csv(this.getAssetInputStream(unitGroup));
-		} catch (IOException e)
+			dataStore.parseUnits(groupJSONObjects.get(unitGroup));
+		} catch (JSONException e)
 		{
 			e.printStackTrace();
 		}
-
-		unitSymbols = csvparser.getUnitSymbols();
-		unitNiceNames = csvparser.getUnitNiceNames();
-		unitConversionUnit = csvparser.getUnitConversionUnit();
-		unitTimes = csvparser.getUnitTimes();
-		unitObjects = converter.getAllUnits(unitConversionUnit, unitTimes);
+	    
+		unitSymbols = dataStore.getUnitSymbols();
+		unitNiceNames = dataStore.getUnitNiceNames();
+	    unitConversionUnits = dataStore.getUnitConversionUnits();
+		unitTimes = dataStore.getUnitTimes();
 		
-
+		unitObjects = converter.getAllUnits(unitConversionUnits, unitTimes);
+		
 		specialChars.put("[squared]", "\u00B2");
 		specialChars.put("[micro]", "\u00B5");
 		specialChars.put("[earth]", "\u2080");
@@ -109,7 +124,7 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 		{
 			public void afterTextChanged(Editable s)
 			{
-				Log.d("VIC", "afterTextChanged: " + s.toString());
+				//Log.d("VIC", "afterTextChanged: " + s.toString());
 				unitListViewAdapter.notifyDataSetChanged();
 			}
 
@@ -141,7 +156,6 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 		spinner_position = position;
 		this.populateDataSet(position, Double.parseDouble(amount.getText().toString()));
 		unitListViewAdapter.notifyDataSetChanged();
-
 	}
 
 	@Override
@@ -152,7 +166,7 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 	private void populateDataSet(Integer position, Double amount)
 	{
 		unitListViewRows = new ArrayList<UnitListViewRow>();
-
+		
 		niceNamesList = new ArrayList<String>();
 
 		for (String key : unitNiceNames.keySet())
@@ -164,8 +178,8 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 			// convert! //
 			// ///////////
 
-			//Double d = unitObjects.get("CENTIMETERS_PER_SQUARE_SECOND").getConverterTo(unitObjects.get(key)).convert(amount);
-			Double d = unitObjects.get("PARSEC").getConverterTo(unitObjects.get(key)).convert(amount);
+			Double d = unitObjects.get("CENTIMETERS_PER_SQUARE_SECOND").getConverterTo(unitObjects.get(key)).convert(amount);
+			//Double d = unitObjects.get("PARSEC").getConverterTo(unitObjects.get(key)).convert(amount);
 
 			String result = decimalFormat.format(d).toString();
 
@@ -179,25 +193,6 @@ public class ConverterFragment extends Fragment implements OnItemSelectedListene
 			unitListViewRows.add(new UnitListViewRow(nicename, symbol, result));
 			niceNamesList.add(nicename);
 		}
-
-	}
-
-	private InputStream getAssetInputStream(Integer unitGroup) throws IOException
-	{
-		InputStream is = null;
-
-		switch (unitGroup) {
-		case 1:
-			is = getActivity().getAssets().open("Acceleration.csv");
-			break;
-		case 4: 
-			is = getActivity().getAssets().open("Astronomical.csv");
-			break;
-		default:
-			is = getActivity().getAssets().open("Acceleration.csv");
-			break;
-		}
-		return is;
 
 	}
 

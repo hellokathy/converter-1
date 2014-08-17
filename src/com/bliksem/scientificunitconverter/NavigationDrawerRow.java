@@ -1,6 +1,5 @@
 package com.bliksem.scientificunitconverter;
 
-import java.util.HashMap;
 
 public class NavigationDrawerRow
 {

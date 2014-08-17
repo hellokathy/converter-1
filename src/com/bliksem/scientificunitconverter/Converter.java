@@ -4,23 +4,18 @@ import static javax.measure.unit.SI.BECQUEREL;
 import static javax.measure.unit.SI.BIT;
 import static javax.measure.unit.SI.CENTI;
 import static javax.measure.unit.SI.COULOMB;
-import static javax.measure.unit.SI.CUBIC_METRE;
-import static javax.measure.unit.SI.GRAM;
 import static javax.measure.unit.SI.GRAY;
 import static javax.measure.unit.SI.JOULE;
 import static javax.measure.unit.SI.KELVIN;
 import static javax.measure.unit.SI.KILOGRAM;
 import static javax.measure.unit.SI.LUX;
 import static javax.measure.unit.SI.METRE;
-import static javax.measure.unit.SI.METRES_PER_SECOND;
-import static javax.measure.unit.SI.METRES_PER_SQUARE_SECOND;
 import static javax.measure.unit.SI.MOLE;
 import static javax.measure.unit.SI.NEWTON;
 import static javax.measure.unit.SI.PASCAL;
 import static javax.measure.unit.SI.RADIAN;
 import static javax.measure.unit.SI.SECOND;
 import static javax.measure.unit.SI.SIEVERT;
-import static javax.measure.unit.SI.SQUARE_METRE;
 import static javax.measure.unit.SI.STERADIAN;
 import static javax.measure.unit.SI.TESLA;
 import static javax.measure.unit.SI.WATT;
@@ -62,8 +57,6 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.ProductUnit;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
-
-import android.util.Log;
 
 public class Converter
 {
@@ -204,8 +197,6 @@ public class Converter
 	public static final Unit<ElectricCharge> FRANKLIN = (COULOMB.times(3.3356e-10));
 
 	HashMap<String, Unit<?>> units;
-
-	// TreeMap<String, Unit<?>> unitObjects = new TreeMap<String, Unit<?>>();
 
 	public HashMap<String, Unit<?>> getAllUnits(TreeMap<String, String> unitConversionUnit, TreeMap<String, Double> unitTimes)
 	{

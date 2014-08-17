@@ -1,6 +1,7 @@
 package com.bliksem.scientificunitconverter;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -40,9 +41,10 @@ public class NavigationDrawerFragment extends Fragment
 	private int mCurrentSelectedPosition = 0;
 	private boolean mFromSavedInstanceState;
 	private boolean mUserLearnedDrawer;
-
-	private String[] navMenuTitles;
-	private String[] navMenuImgs;
+	
+	DataStore dataStore;
+	TreeMap<Integer, String> groupNames = new TreeMap<Integer, String>();
+	TreeMap<Integer, String> groupIcons = new TreeMap<Integer, String>();
 
 	private ArrayList<NavigationDrawerRow> navigationDrawerRows;
 	private NavigationDrawerAdapter navigationDrawerAdapter;
@@ -64,15 +66,18 @@ public class NavigationDrawerFragment extends Fragment
 			mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
 			mFromSavedInstanceState = true;
 		}
-
-		navMenuTitles = getResources().getStringArray(R.array.unit_groups);
-		navMenuImgs = getResources().getStringArray(R.array.unit_imgs);
+		
+		dataStore = DataStore.getInstance();
+		if ( ! dataStore.isInitDone() ) dataStore.init(getActivity());
+		
+		groupNames = dataStore.getGroupNames();
+		groupIcons = dataStore.getGroupIcons();
 
 		navigationDrawerRows = new ArrayList<NavigationDrawerRow>();
 
-		for (int i = 0; i <= navMenuTitles.length - 1; i++)
+		for ( Integer key : groupNames.keySet() )
 		{
-			navigationDrawerRows.add(new NavigationDrawerRow(navMenuTitles[i], navMenuImgs[i]));
+			navigationDrawerRows.add(new NavigationDrawerRow(groupNames.get(key), groupIcons.get(key)));		
 		}
 
 		selectItem(mCurrentSelectedPosition);
@@ -195,8 +200,8 @@ public class NavigationDrawerFragment extends Fragment
 		Fragment fragment = null;
 
 		Bundle bundle = new Bundle();
-		//bundle.putInt("unitGroup", position);
-		bundle.putInt("unitGroup", 4);
+		bundle.putInt("unitGroup", position);
+		//.putInt("unitGroup", 4);
 
 		fragment = new ConverterFragment();
 		fragment.setArguments(bundle);
